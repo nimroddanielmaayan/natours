@@ -8,6 +8,13 @@
 
 > The vscode-setup.md file contains Jonas's recommended vscode extensions and settings for node
 
+## Libraries and Packages Used in the Course
+
+- express
+- nodemon
+- slugify
+- morgan
+
 ## Node.js Basics
 
 ### General
@@ -218,3 +225,15 @@ The server only stores data about the resources (like tours, users, etc.), and a
 - The middleware that we used is also called the "middleware stack", and the order at which the middleware functions are called is very important
 
 - All middleware finctions end with a "next" method, except for the last one which ends with a send method
+
+- To add middleware, we'll usually want to use the app.use() method at the beginning of the application. This way, the middleware will be applied to every request. If we need middleware that applies only to a specific route, there are ways to do that
+
+- Any custom middleware has access to the request and response objects, and also to the next() method. Every middleware function should end with the next() method, except for the last one which should end with the send() method
+
+- Remember that when we have access to the req\res objects, we can add properties to them and not only read them. In many cases middleware does this
+
+- In the express documentation, there's a list of all the built-in middleware functions that express provides and also the third party middleware functions that are recommended by express
+
+### Routing
+
+- The express.Router() method and the pattern that's used with it create a way of separating the routes into different files, and then importing them into the main app.js file. This is a good way of organizing the code
