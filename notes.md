@@ -238,11 +238,11 @@ The server only stores data about the resources (like tours, users, etc.), and a
 
 - The express.Router() method and the pattern that's used with it create a way of separating the routes into different files, and then importing them into the main app.js file. This is a good way of organizing the code
 
-- Routing conventions: Some good practices with routes are:
-    * Put all routes in a "routes" folder
-    * Name them just "router"
-    * module.exports = router; and then give the name in the import
-    * Put all route handlers in a "controllers" folder
+- Routing conventions - Some good practices with routes are:
+    - Put all routes in a "routes" folder
+    - Name them just "router"
+    - module.exports = router; and then give the name in the import
+    - Put all route handlers in a "controllers" folder
 
 - It's also good practice to meep all the express stuff in the app.js file, and all the server stuff in the server.js file
 
