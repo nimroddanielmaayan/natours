@@ -14,6 +14,7 @@
 - nodemon
 - slugify
 - morgan
+- dotenv
 
 ## Node.js Basics
 
@@ -54,6 +55,10 @@
 - An important note: If we want to build a server that will supply the same data to different types of clients (like a browser and also a native mobile app), we need to build an API, not an SSR, since only browsers can recieve and render HTML
 
 - Some companies\people don't even have a front end, and only build APIs in order to sell access to their data to others. This is called a "headless" approach
+
+- In node, we're allowed to send only one response to each request. If we accidentally send two responses, we'll get an error
+
+- Note: Jonas's eslint rules + eslint extention libraries are preety good, I might want to use them in the future. It's recommended to find a configuration for eslint that I will like working with
 
 ### Command Prompt
 
@@ -234,6 +239,14 @@ The server only stores data about the resources (like tours, users, etc.), and a
 
 - In the express documentation, there's a list of all the built-in middleware functions that express provides and also the third party middleware functions that are recommended by express
 
+- Param middleware: This is a special type of middleware that only runs for certain parameters. For example, if we have a route like "/api/v1/tours/:id", we can create a middleware function that will run only for this route, and will check if the id is valid. This is a good way of validating data
+
+- Param middleware has access to: req, res, next, val (the value of the parameter), and name (the name of the parameter)
+
+- If the param that we're checking doesn't exist, the middleware will be skipped
+
+- The phillosophy of express is to use middleware and not if-else statements whenever possible, even when if-else statements might also work
+
 ### Routing
 
 - The express.Router() method and the pattern that's used with it create a way of separating the routes into different files, and then importing them into the main app.js file. This is a good way of organizing the code
@@ -246,4 +259,55 @@ The server only stores data about the resources (like tours, users, etc.), and a
 
 - It's also good practice to meep all the express stuff in the app.js file, and all the server stuff in the server.js file
 
-- server.js is the entry point to the entire node application
+- server.js is the entry point to the entire node application. It shouldn't import express (only app.js should do that). server.js should only import the app.js file and then start the server
+
+- Chaining multiple controllers\middleware to one route: It's possible to chain several controllers to one route, and they will all run in order.
+For example: checkId -> checkBody -> createTour
+
+### Serving Static Files
+
+- This subject is simple but super important for any web application
+
+- The express.static() method is a simple, built-in middleware function that allows us to serve static files. It takes one argument: the path to the folder that contains the static files
+
+- It's recommended to use the __dirname variable when specifying the path to the static files folder
+
+- When accessing the static files, the folder that we set in express.static() will become the root folder. So it's good practice to only serve static files from one folder that may have subfolders, and not from multiple folders
+
+### Environment Variables
+
+- This is an important core concept in node.js and express
+
+- Environment variables are global variables that define the environment of the node application. Node and express both set a lot of environment variables by default, and we can also set our own
+
+- Every node app must have an env variable called NODE_ENV. It's usually set to "development" or "production". If not defined by us, this variable is set automatically by node to "development"
+
+- To set the env variables in node, we can either add all of them to the command line, or we can use a config.env file (which is the more practical\best practice way)
+
+- It is best practice to put sensitive\secret data like passwords and API keys in the config.env file
+
+- It's a convention to write env names in uppercase, and to separate words with underscores
+
+- The best practice way to apply the config.env is using the dotenv package. This package will automatically read the config.env file and set all the variables in it to the process.env object
+
+- The dotenv package should be required at the top of the server.js file and called using the dotenv.config() method. And that's it, there's no need to add anything to the package.json file (unless we want to overwrite any env variable). This must be done before requiring app.js or anything else that might depend on env variables, otherwise the env variables won't be available for them
+
+- If we do want to overwrite an env variable when strting a script, we need to add the variable to the script in package.json. For example: "start-prod": "NODE_ENV=production nodemon server.js"
+
+- Once dotenv.config() has run, any env variable (like: process.ENV.VARIABLE_NAME) will be available in every file of the application, without having to require anything in these files. That's because dotenv.config() saves the env variables in the global node process object, and they are then read from there
+
+- It's possible (and sometimes useful) to log the entire process.env object to the console, from anywhere in the application
+
+## MongoDB and Mongoose
+
+### MongoDB Basics
+
+- MongoDB is a NoSQL database. It's a document database, which means that it stores data in JSON-like documents called BSON. It's also a non-relational database, which means that it doesn't store data in tables and doesn't use SQL to query the data
+
+- I'm not sure if I need the Mongo Shell or if I can just use Compass. In any case, there are a lot of MongoDB tutorials online for anything that I might need
+
+- It's possible that clients will want to use databases other than MongoDB, so there's no need to know everything about MongoDB, just the basics and the general logic
+
+### Mongoose Basics
+
+- ...
