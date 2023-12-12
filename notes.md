@@ -4,7 +4,7 @@
 
 > All of the course notes that I wrote are in this file
 
-> The course slides PDF has a lot of important information, including the theory lectures
+> The course slides PDF has a lot of important information, including the theory lectures. They "complete" the notes that I wrote here
 
 > The vscode-setup.md file contains Jonas's recommended vscode extensions and settings for node
 
@@ -59,6 +59,19 @@
 - In node, we're allowed to send only one response to each request. If we accidentally send two responses, we'll get an error
 
 - Note: Jonas's eslint rules + eslint extention libraries are preety good, I might want to use them in the future. It's recommended to find a configuration for eslint that I will like working with
+
+- There are many different ways and styles with which to write a node application, but the best practices that we have in this course and the MVC architechture are very good parliminary guidelines
+
+- Running node files\code from the command line - main options:
+    - npm scriptname (if we have a script in package.json)
+    - node filename.js
+    - nodemon filename.js (to run with nodemon)
+    - node foldername/subfoldername/filename.js --option1 --option2 (to run a file that's not in the root folder, with process.argv option flags. This is useful for running one-time scripts)
+    - node (opens the node REPL), and then we can write JS code directly in the terminal
+    - node -p "1+2" (to run a single line of code)
+    - node -e "console.log(1+2)" (to run a single line of code and also log it to the console)
+    - node -v (to check the node version)
+    - node -h (to see all the options)
 
 ### Command Prompt
 
@@ -308,6 +321,56 @@ For example: checkId -> checkBody -> createTour
 
 - It's possible that clients will want to use databases other than MongoDB, so there's no need to know everything about MongoDB, just the basics and the general logic
 
+- Any other information is available online and in the MongoDB documentation
+
 ### Mongoose Basics
 
-- ...
+- Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node. It makes it easier for us to write JS code that interacts with a database (MongoDB in this case)
+
+- It's also possible to write ODM code without Mongoose, but it's more complicated. So Mongoose is like express for MongoDB. There are other ODM libraries for MongoDB, but Mongoose is the most popular one
+
+- Mongoose provides: Data schema (structure) + data model (interface),  validation, queries, middleware and more
+
+- The model wraps the schema and provides an interface between the application and the database, for CRUD operations. A schema is like a blueprint for data (kind of like a class in OOP). In fact, behind the scenes this is exactly what happens - Mongoose creates a class based on the schema, and then we can create new objects from that class. This is a bit of a simplification, but that's the general idea
+
+- Any instance of a model automatically gets built-in methods like save(), find(), etc
+
+- Using the schema and the model, our application will know the "rules" of the database, and will know how to interact with it correctly
+
+- When describing a schema, the minimum that we need to specify are the field name and the field type (using native JS types). For more advanced cases, we can specify the field name and an object of optional values
+
+- To create a schema + model, we first define the schema and then wrap it in a model. The model is then saved in a variable, and we can use it as an API to interact with the database
+
+- It's a convention to begin model names with a capital letter
+
+- If a database doesn't exist, Mongoose will automatically create it once the application requests to create a new document in it
+
+### Advanced Mongoose
+
+- When working with Mongoose, it's recommended to have the docs open and to use them as a reference, since there are a whole lot of methods and options
+
+- Usually, every CRUD action in Mongoose will have 2 stages:
+    - Updating the database data
+    - Sending a response to the client (so that the client program can update the UI, provide feedback to the user, etc.)
+
+- All of the mongoose methods that we use return promises, so we should use async\await with them
+
+- Create: The best way to create documents with mongoose is using the create() method
+
+- Read: The best way to read documents with mongoose is using the find()\findById()\findOne() methods
+
+- Update: The best way to update documents with mongoose is using the findByIdAndUpdate() method. Note that on this method, it's recommended to set the "new" option to true (which will return the updated document rather than the original) and also to set the "runValidators" option to true (which will run the validators again on the updated document)
+
+- Delete: The best way to delete documents with mongoose is using the findByIdAndDelete() method. Note that it's common practice not to send back any inforamtion to the client about the deleted document, but just a status code
+
+- We need to connect to the database using the mongoose.connect() method before we can do anything else with mongoose, in any file which connects to the database. Because of this, it's best practice to put the mongoose.connect() method only in one file, usually the server.js file
+
+### MVC Architecture in the MERN Stack
+
+- MVC stands for Model-View-Controller. It's a common architecture for web applications
+
+- The controller is concerned only with application logic, the Model is concerned only with business logic, and the view is concerned only with presentation logic. Usually, any input will go through all three of them and end with an output. The controller will usually be the mediator between the model, the view, the input and the output, as we can see in the chart in the slides
+
+- Business logic and application logic might sometimes overlap, but it's important to keep them separate as much as possible, within logic
+
+- "Fat models\thin controllers": A common convention in MVC, which aims to offload as much of the logic as possible to the model. Though in node, the controller will always be needed in order to handle requests and responses, so it won't be completely "thin"
