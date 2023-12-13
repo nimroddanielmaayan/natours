@@ -365,6 +365,17 @@ For example: checkId -> checkBody -> createTour
 
 - We need to connect to the database using the mongoose.connect() method before we can do anything else with mongoose, in any file which connects to the database. Because of this, it's best practice to put the mongoose.connect() method only in one file, usually the server.js file
 
+- Filtering with Mongoose:
+    - It's possible to filter get requests using the query string that's sent to the server, according to any field in the database. For example: /api/v1/tours?duration=5&difficulty=easy
+    - The query string will be available in the req.query object
+    - There are 2 ways to filter the results: Using the MongoDB query string, or using the Mongoose query methods (which is better, because it gives us a lot more options that can be implemented easily)
+    - Note, that if there might be query parameters that we don't want to filter by, we can use the delete operator to delete them from the req.query object (Jonas does this in the course)
+    - Note, that a query is a special mongoose object, and we can chain methods to it. After the query is executed, it will return a promise, and we can use async\await with it. After the promise is resolved, the results will be available in the variable in which we saved the promise
+
+- Advanced filtering with Mongoose:
+    - See what's the best way to do it. Jonas uses a kind of a workaround to alter the query object and to add a $ sign to the beginning of each item in it, but there might be a better way (maybe a built-in mongoose method?)
+    - It's possible to use the $gte, $lte, $gt, $lt, $ne, etc operators in the query object, to filter the results according to the values of the fields
+
 ### MVC Architecture in the MERN Stack
 
 - MVC stands for Model-View-Controller. It's a common architecture for web applications
