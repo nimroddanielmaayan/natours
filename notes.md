@@ -365,6 +365,12 @@ For example: checkId -> checkBody -> createTour
 
 - We need to connect to the database using the mongoose.connect() method before we can do anything else with mongoose, in any file which connects to the database. Because of this, it's best practice to put the mongoose.connect() method only in one file, usually the server.js file
 
+- The query object: Every node request has a query object, which is a special mongoose object. We can access it using req.query. We can also chain methods to it, and then execute it using await. We can use it in order to manipulate data, etc. A lot of the operations that can be done on requests (like sorting and filtering) are done using the query object
+
+- Sort\filter\pagination parameters are just regular query parameters, that can be sent by the request. They can then be passed into functions
+
+- Sorting in reverse order is done using the - sign before the field name in the query string. Sorting by multiple fields (in case several results of one field share the same rank) is done by separating the fields with a comma
+
 - Filtering with Mongoose:
     - It's possible to filter get requests using the query string that's sent to the server, according to any field in the database. For example: /api/v1/tours?duration=5&difficulty=easy
     - The query string will be available in the req.query object
@@ -375,6 +381,12 @@ For example: checkId -> checkBody -> createTour
 - Advanced filtering with Mongoose:
     - See what's the best way to do it. Jonas uses a kind of a workaround to alter the query object and to add a $ sign to the beginning of each item in it, but there might be a better way (maybe a built-in mongoose method?)
     - It's possible to use the $gte, $lte, $gt, $lt, $ne, etc operators in the query object, to filter the results according to the values of the fields
+
+- Limiting fields: It's often a very good practice to sometimts limit the fields that are sent to the client, and not to send all the fields. This is especially true if the result is very large, or if the result contains sensitive data. Also. there is some data that we will never want to send to the client, like Monngoose's internal data
+
+- The ID is a special field that can't be removed from a response. It's always sent to the client even if we don't specify it in the query string
+
+- Hiding certain fields from the user, using the schema: To do this, just set the schema's "select" property of the field to false
 
 ### MVC Architecture in the MERN Stack
 
