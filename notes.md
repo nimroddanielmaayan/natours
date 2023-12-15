@@ -73,6 +73,8 @@
     - node -v (to check the node version)
     - node -h (to see all the options)
 
+- Every API needs th have good documentation, whether it's meant for internal use or for external use. A good documantation should list the endpoints, the parameters, the expected responses, etc
+
 ### Command Prompt
 
 - Node REPL: To enter REPL (Read Evaluate Print Loop), go into the terminal and write "node"
@@ -277,6 +279,8 @@ The server only stores data about the resources (like tours, users, etc.), and a
 - Chaining multiple controllers\middleware to one route: It's possible to chain several controllers to one route, and they will all run in order.
 For example: checkId -> checkBody -> createTour
 
+- Mounting a router on a route: It's possible to mount a router on a route, so that all the routes in the router will be applied to that route. For example: app.use("/api/v1/tours", tourRouter). This is common practice
+
 ### Serving Static Files
 
 - This subject is simple but super important for any web application
@@ -323,6 +327,8 @@ For example: checkId -> checkBody -> createTour
 
 - Any other information is available online and in the MongoDB documentation
 
+- Note, that query strings sent by the client in the req will always be strings, even if the data in the database is not a string. So we'll sometimes need to convert the query strings to the correct data type before using them in the query (for example, multiplying them by 1 to convert them to numbers)
+
 ### Mongoose Basics
 
 - Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node. It makes it easier for us to write JS code that interacts with a database (MongoDB in this case)
@@ -367,7 +373,23 @@ For example: checkId -> checkBody -> createTour
 
 - The query object: Every node request has a query object, which is a special mongoose object. We can access it using req.query. We can also chain methods to it, and then execute it using await. We can use it in order to manipulate data, etc. A lot of the operations that can be done on requests (like sorting and filtering) are done using the query object
 
+### MVC Architecture in the MERN Stack
+
+- MVC stands for Model-View-Controller. It's a common architecture for web applications
+
+- The controller is concerned only with application logic, the Model is concerned only with business logic, and the view is concerned only with presentation logic. Usually, any input will go through all three of them and end with an output. The controller will usually be the mediator between the model, the view, the input and the output, as we can see in the chart in the slides
+
+- Business logic and application logic might sometimes overlap, but it's important to keep them separate as much as possible, within logic
+
+- "Fat models\thin controllers": A common convention in MVC, which aims to offload as much of the logic as possible to the model. Though in node, the controller will always be needed in order to handle requests and responses, so it won't be completely "thin"
+
+### Advanced Querying - Pagination, Sorting, Filtering and Aliasing
+
+- The advanced queries that are listed here are just exapmles. There are a lot of advanced queries that can be done with Mongoose, according to the application's needs. These examples show some common use cases, and also show the general logic behind advanced queries
+
 - Sort\filter\pagination parameters are just regular query parameters, that can be sent by the request. They can then be passed into functions
+
+- It's important to understand that query objects are special mongoose objects. We can chain methods to query objects, that will always return new query objects, and then chain even more methods to the results, untill we're finally ready to execute the query using await. The results (the data after all the operations) will then be available in the variable in which we saved the promise
 
 - Sorting in reverse order is done using the - sign before the field name in the query string. Sorting by multiple fields (in case several results of one field share the same rank) is done by separating the fields with a comma
 
@@ -388,12 +410,19 @@ For example: checkId -> checkBody -> createTour
 
 - Hiding certain fields from the user, using the schema: To do this, just set the schema's "select" property of the field to false
 
-### MVC Architecture in the MERN Stack
+- Pagination: This is a very common practice in web applications, and it's also very important for performance. It's usually done using the limit() and skip() methods. The limit() method limits the number of results that are sent to the client, and the skip() method skips the first n results. For example: /api/v1/tours?limit=5&skip=10 will send the 11th to the 15th results to the client. It's also possible to use the page() method, which is a shorthand for skip() and limit()
 
-- MVC stands for Model-View-Controller. It's a common architecture for web applications
+- It's usually neccesaary to set default values for pagination, since databases tend to get large over time. This can easily be done using the || operator
 
-- The controller is concerned only with application logic, the Model is concerned only with business logic, and the view is concerned only with presentation logic. Usually, any input will go through all three of them and end with an output. The controller will usually be the mediator between the model, the view, the input and the output, as we can see in the chart in the slides
+- The countDocuments() method: This is a built-in mongoose method that counts the number of documents in a collection. It's usually used for pagination, to calculate the number of pages
 
-- Business logic and application logic might sometimes overlap, but it's important to keep them separate as much as possible, within logic
+### Several More Advanced API Features
 
-- "Fat models\thin controllers": A common convention in MVC, which aims to offload as much of the logic as possible to the model. Though in node, the controller will always be needed in order to handle requests and responses, so it won't be completely "thin"
+- Aliasing: An alias is a name that we give to an important route\query. The way to do this is by setting up a new route, that will have custom middleware which will define the desired query. For example: /top-5-cheap
+The steps to doing that are:
+    - Create a middleware function that will run before the route handler
+    - In the middleware function, add the alias to the req.query object
+    - Create a new route handler for the alias and use this middleware function in it, as it's first argument (before the route handler)
+    - Now that the alias route is ready, the front end can query it and get the desired results
+
+-
