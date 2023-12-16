@@ -15,6 +15,7 @@
 - slugify
 - morgan
 - dotenv
+- validator
 
 ## Node.js Basics
 
@@ -416,7 +417,7 @@ For example: checkId -> checkBody -> createTour
 
 - The countDocuments() method: This is a built-in mongoose method that counts the number of documents in a collection. It's usually used for pagination, to calculate the number of pages
 
-### Several More Advanced API Features
+### Other Advanced API Features
 
 - Aliasing: An alias is a name that we give to an important route\query. The way to do this is by setting up a new route, that will have custom middleware which will define the desired query. For example: /top-5-cheap
 The steps to doing that are:
@@ -425,4 +426,12 @@ The steps to doing that are:
     - Create a new route handler for the alias and use this middleware function in it, as it's first argument (before the route handler)
     - Now that the alias route is ready, the front end can query it and get the desired results
 
--
+- Creating a class for the API features: It might be a good idea to create a "superclass" for the API features, and then extend it for each model. Especially if our API will be very large. This can be done using the native JS class syntax
+
+- We can put this masterclass in a folder named utils or utilities, along with other utility functions
+
+- The MongoDB aggregation pipeline: This is a built-in MongoDB feature (which is accessible through Mongoose) that allows us to do complex data processing on the requested data, in stages. For example: Calculating sum by group, distance between 2 locations, various statistics, etc. It's like applying a complex function on the data, but at the database level
+
+- There's a lot of info about the MongoDB aggregation pipeline in the MongoDB documentation
+
+- The aggregate() method is the basis of the aggregation pipeline. It takes an array of stages as it's argument. Each stage is an object with a $ sign and a method name, and then the arguments for that method. For example: { $match: { difficulty: "easy" } }
